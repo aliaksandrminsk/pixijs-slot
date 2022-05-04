@@ -18,21 +18,21 @@ interface IReel {
   blur: PIXI.filters.BlurFilter,
 }
 
-type FunctionType = (a: any) => any;
+//type VoidFunctionType = null | (() => void);
 
 interface ITween {
-  object: {[key: string]: any},
+  object: IReel,
   property: string,
-  propertyBeginValue: any,
-  target: any,
-  easing: FunctionType,
+  propertyBeginValue: number,
+  target: number,
+  easing: (a: number) => number,
   time: number,
-  change: null | FunctionType,
-  complete: null | FunctionType,
+  change: null | (() => void),
+  complete: null | (() => void),
   start: number,
 }
 
-export class TankApplication extends PIXI.Application {
+export class SlotApplication extends PIXI.Application {
   //private store: ITankStore;
   //private tank = new Tank();
   //private wall = new Wall();
@@ -143,7 +143,7 @@ export class TankApplication extends PIXI.Application {
     bottom.addChild(playText);
 
     // Add header text
-    const headerText = new PIXI.Text('PIXI MONSTER SLOTS!', style);
+    const headerText = new PIXI.Text('PIXI SLOT', style);
     headerText.x = Math.round((top.width - headerText.width) / 2);
     headerText.y = Math.round((margin - headerText.height) / 2);
     top.addChild(headerText);
@@ -170,7 +170,7 @@ export class TankApplication extends PIXI.Application {
         const extra = Math.floor(Math.random() * 3);
         const target = r.position + 10 + i * 5 + extra;
         const time = 2500 + i * 600 + extra * 600;
-        this.tweenTo(r, 'position', target, time, this.backout(0.5), null, i === this.reels.length - 1 ? reelsComplete : null);
+        this.tweenTo(r, target, time, this.backout(0.5), null, i === this.reels.length - 1 ? reelsComplete : null);
       }
     }
 
@@ -179,9 +179,29 @@ export class TankApplication extends PIXI.Application {
       running = false;
     }
 
-    // Listen for animate update.
-    this.ticker.add((delta: number) => {
-      // Update the slots.
+
+    this.ticker.add(() => {
+      // Listen for animate update.
+      const now = Date.now();
+      const remove = [];
+      for (let i = 0; i < this.tweening.length; i++) {
+        const t: ITween = this.tweening[i];
+        const phase = Math.min(1, (now - t.start) / t.time);
+
+        t.object["position"] = this.lerp(t.propertyBeginValue, t.target, t.easing(phase));
+
+        if (t.change) t.change();
+        if (phase === 1) {
+          t.object["position"] = t.target;
+          if (t.complete) t.complete();
+          remove.push(t);
+        }
+      }
+      for (let i = 0; i < remove.length; i++) {
+        this.tweening.splice(this.tweening.indexOf(remove[i]), 1);
+      }
+
+      // Listen for animate update.
       for (let i = 0; i < this.reels.length; i++) {
         const r = this.reels[i];
         // Update blur filter y amount based on speed.
@@ -193,6 +213,7 @@ export class TankApplication extends PIXI.Application {
         for (let j = 0; j < r.symbols.length; j++) {
           const s = r.symbols[j];
           const prevy = s.y;
+
           s.y = ((r.position + j) % r.symbols.length) * this.SYMBOL_SIZE - this.SYMBOL_SIZE;
           if (s.y < 0 && prevy > this.SYMBOL_SIZE) {
             // Detect going over and swap a texture.
@@ -204,35 +225,21 @@ export class TankApplication extends PIXI.Application {
         }
       }
     });
-
-    // Listen for animate update.
-    this.ticker.add((delta: number) => {
-      const now = Date.now();
-      const remove = [];
-      for (let i = 0; i < this.tweening.length; i++) {
-        const t: ITween = this.tweening[i];
-        const phase = Math.min(1, (now - t.start) / t.time);
-
-        t.object[t.property] = this.lerp(t.propertyBeginValue, t.target, t.easing(phase));
-        if (t.change) t.change(t);
-        if (phase === 1) {
-          t.object[t.property] = t.target;
-          if (t.complete) t.complete(t);
-          remove.push(t);
-        }
-      }
-      for (let i = 0; i < remove.length; i++) {
-        this.tweening.splice(this.tweening.indexOf(remove[i]), 1);
-      }
-    });
   }
 
   // Very simple tweening utility function. This should be replaced with a proper tweening library in a real product.
-  tweenTo(object: {[key: string]: any}, property: string, target: any, time: number, easing: FunctionType, onchange: null | FunctionType, oncomplete: null | FunctionType) {
+  tweenTo(
+      object: IReel,
+      target: number,
+      time: number,
+      easing: (a: number) => number,
+      onchange: null | (() => void),
+      oncomplete: null | (() => void))
+  {
     const tween: ITween = {
       object,
-      property,
-      propertyBeginValue: object[property],
+      property: "position",
+      propertyBeginValue: object["position"],
       target,
       easing,
       time,
@@ -245,7 +252,7 @@ export class TankApplication extends PIXI.Application {
   }
 
   // Basic lerp function.
-  lerp (a1:any, a2:any, t:any) {
+  lerp (a1: number, a2: number, t: number) {
     return a1 * (1 - t) + a2 * t;
   }
 

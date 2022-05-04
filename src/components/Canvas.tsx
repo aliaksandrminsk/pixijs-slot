@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { TankApplication } from "../app/TankApplication";
+import { SlotApplication } from "../app/SlotApplication";
 import { useStore } from "../store";
 
 const Canvas = () => {
@@ -7,7 +7,7 @@ const Canvas = () => {
   const { tankStore: store } = useStore();
 
   useEffect(() => {
-    const app = new TankApplication(store);
+    const app = new SlotApplication(store);
     //store.startTankHandler = () => app.startTank();
     //store.stopTankHandler = () => app.stopTank();
 
