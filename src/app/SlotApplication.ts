@@ -32,10 +32,11 @@ export class SlotApplication extends PIXI.Application {
     //PIXI.utils.clearTextureCache();
 
     this.loader
-        .add('./assets/eggHead.pn', './assets/eggHead.png')
-        .add('./assets/flowerTop.png', './assets/flowerTop.png')
-        .add('./assets/helmlok.png', './assets/helmlok.png')
-        .add('./assets/skully.png', './assets/skully.png')
+        .add('./assets/queen.png', './assets/queen.png')
+        .add('./assets/king.png', './assets/king.png')
+        .add('./assets/9.png', './assets/9.png')
+        .add('./assets/2.png', './assets/2.png')
+        .add('./assets/3.png', './assets/3.png')
         .load(this.onAssetsLoaded.bind(this));
   }
 
@@ -43,10 +44,11 @@ export class SlotApplication extends PIXI.Application {
   onAssetsLoaded() {
     // Create different slot symbols.
     const slotTextures = [
-      PIXI.Texture.from('./assets/eggHead.png'),
-      PIXI.Texture.from('./assets/flowerTop.png'),
-      PIXI.Texture.from('./assets/helmlok.png'),
-      PIXI.Texture.from('./assets/skully.png'),
+      PIXI.Texture.from('./assets/queen.png'),
+      PIXI.Texture.from('./assets/king.png'),
+      PIXI.Texture.from('./assets/2.png'),
+      PIXI.Texture.from('./assets/9.png'),
+      PIXI.Texture.from('./assets/3.png'),
     ];
 
     // Build the reels
