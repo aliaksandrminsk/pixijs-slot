@@ -7,7 +7,7 @@ const Canvas = () => {
   const { tankStore: store } = useStore();
 
   useEffect(() => {
-    const app = new SlotApplication(store);
+    const app = new SlotApplication();
     //store.startTankHandler = () => app.startTank();
     //store.stopTankHandler = () => app.stopTank();
 

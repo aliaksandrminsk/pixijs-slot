@@ -1,0 +1,52 @@
+{"frames": {
+
+"2.png":
+{
+	"frame": {"x":0,"y":0,"w":170,"h":170},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":170,"h":170},
+	"sourceSize": {"w":170,"h":170}
+},
+"3.png":
+{
+	"frame": {"x":170,"y":0,"w":170,"h":170},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":170,"h":170},
+	"sourceSize": {"w":170,"h":170}
+},
+"9.png":
+{
+	"frame": {"x":340,"y":0,"w":170,"h":170},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":170,"h":170},
+	"sourceSize": {"w":170,"h":170}
+},
+"king.png":
+{
+	"frame": {"x":510,"y":0,"w":170,"h":170},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":170,"h":170},
+	"sourceSize": {"w":170,"h":170}
+},
+"queen.png":
+{
+	"frame": {"x":680,"y":0,"w":170,"h":170},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":170,"h":170},
+	"sourceSize": {"w":170,"h":170}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "atlas.png",
+	"format": "RGBA8888",
+	"size": {"w":850,"h":170},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:2792deb8503a1e9669d3467f0da3496c:f780a622bd283473b6762f1f544009e1:cbce6b53f0f49e0bf15173c25c41f876$"
+}
+}
