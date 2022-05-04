@@ -2,13 +2,8 @@ import * as PIXI from "pixi.js";
 import { ITankStore } from "../store/TankStore";
 import { appConstants } from "./constants";
 import { Sprite } from "pixi.js";
+import TWEEN, {Easing} from "@tweenjs/tween.js";
 window.PIXI = PIXI;
-
-// declare global {
-//   interface Window {
-//     TANK: any;
-//   }
-// }
 
 interface IReel {
   container: PIXI.Container,
@@ -18,45 +13,23 @@ interface IReel {
   blur: PIXI.filters.BlurFilter,
 }
 
-//type VoidFunctionType = null | (() => void);
-
-interface ITween {
-  object: IReel,
-  property: string,
-  propertyBeginValue: number,
-  target: number,
-  easing: (a: number) => number,
-  time: number,
-  change: null | (() => void),
-  complete: null | (() => void),
-  start: number,
-}
-
 export class SlotApplication extends PIXI.Application {
-  //private store: ITankStore;
-  //private tank = new Tank();
-  //private wall = new Wall();
-  //private turnTowerTween: Tween<Tank> = new TWEEN.Tween(this.tank);
-  //private turnBodyTween: Tween<Tank> = new TWEEN.Tween(this.tank);
+  private store: ITankStore;
 
   protected readonly REEL_WIDTH = 160;
   protected readonly SYMBOL_SIZE = 150;
   protected reels = new Array<IReel>();
-  protected tweening = new Array<ITween>();
+  protected tweening = new Array();
 
-  constructor(store?: ITankStore) {
+  constructor(store: ITankStore) {
     super({
       width: appConstants.STAGE_WIDTH,
       height: appConstants.STAGE_HEIGHT,
       backgroundColor: appConstants.COLOR,
     });
 
-    //this.store = store;
+    this.store = store;
     //PIXI.utils.clearTextureCache();
-    // assetsMap.sprites.forEach((value) =>
-    //   this.loader.add(value.name, value.url)
-    // );
-    // this.loader.load(this.runGame);
 
     this.loader
         .add('./assets/eggHead.pn', './assets/eggHead.png')
@@ -165,12 +138,21 @@ export class SlotApplication extends PIXI.Application {
       if (running) return;
       running = true;
 
+      this.deleteAllTweens();
+
       for (let i = 0; i < this.reels.length; i++) {
         const r = this.reels[i];
         const extra = Math.floor(Math.random() * 3);
         const target = r.position + 10 + i * 5 + extra;
         const time = 2500 + i * 600 + extra * 600;
-        this.tweenTo(r, target, time, this.backout(0.5), null, i === this.reels.length - 1 ? reelsComplete : null);
+        //this.tweenTo(r, target, time, this.backout(0.5), null, i === this.reels.length - 1 ? reelsComplete : null);
+        const tween = new TWEEN.Tween(r).to({ position: target }, time);
+        tween.easing(this.backout(0.5));
+        //tween.easing(Easing.Cubic.Out);
+        if(i === this.reels.length - 1 ) tween.onComplete(reelsComplete);
+        tween.start();
+        this.tweening.push(tween);
+
       }
     }
 
@@ -181,27 +163,9 @@ export class SlotApplication extends PIXI.Application {
 
 
     this.ticker.add(() => {
-      // Listen for animate update.
-      const now = Date.now();
-      const remove = [];
-      for (let i = 0; i < this.tweening.length; i++) {
-        const t: ITween = this.tweening[i];
-        const phase = Math.min(1, (now - t.start) / t.time);
 
-        t.object["position"] = this.lerp(t.propertyBeginValue, t.target, t.easing(phase));
+      TWEEN.update();
 
-        if (t.change) t.change();
-        if (phase === 1) {
-          t.object["position"] = t.target;
-          if (t.complete) t.complete();
-          remove.push(t);
-        }
-      }
-      for (let i = 0; i < remove.length; i++) {
-        this.tweening.splice(this.tweening.indexOf(remove[i]), 1);
-      }
-
-      // Listen for animate update.
       for (let i = 0; i < this.reels.length; i++) {
         const r = this.reels[i];
         // Update blur filter y amount based on speed.
@@ -227,38 +191,14 @@ export class SlotApplication extends PIXI.Application {
     });
   }
 
-  // Very simple tweening utility function. This should be replaced with a proper tweening library in a real product.
-  tweenTo(
-      object: IReel,
-      target: number,
-      time: number,
-      easing: (a: number) => number,
-      onchange: null | (() => void),
-      oncomplete: null | (() => void))
-  {
-    const tween: ITween = {
-      object,
-      property: "position",
-      propertyBeginValue: object["position"],
-      target,
-      easing,
-      time,
-      change: onchange,
-      complete: oncomplete,
-      start: Date.now(),
-    };
-    this.tweening.push(tween);
-    return tween;
-  }
-
-  // Basic lerp function.
-  lerp (a1: number, a2: number, t: number) {
-    return a1 * (1 - t) + a2 * t;
-  }
-
-  // Backout function from tweenjs.
-  // https://github.com/CreateJS/TweenJS/blob/master/src/tweenjs/Ease.js
   backout(amount: number) {
     return (t: number) => (--t * t * ((amount + 1) * t + amount) + 1);
+  }
+
+  deleteAllTweens() {
+    for (let i = 0; i < this.tweening.length; i++) {
+      this.tweening[i].stop();
+      this.tweening.splice(this.tweening.indexOf(this.tweening[i]), 1);
+    }
   }
 }
