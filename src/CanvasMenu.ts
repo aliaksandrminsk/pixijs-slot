@@ -20,6 +20,7 @@ export class CanvasMenu {
 
     this.menu.className = "canvas-menu__items";
     this.menu.style.top = topPos;
+    this.menu.style.pointerEvents = "none";
     const items = ["About", "Products", "Blogs", "Contact"];
     for (const name of items) {
       this.menu.appendChild(this.getSubMenu(name));
@@ -31,6 +32,12 @@ export class CanvasMenu {
       opacity: 1,
       height: height,
       ease: "expo.inOut",
+      onComplete: () => {
+        this.menu.style.pointerEvents = "auto";
+      },
+      onReverseComplete: () => {
+        this.menu.style.pointerEvents = "none";
+      },
     });
     this.tl.from(
       links,
