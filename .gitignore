@@ -12,6 +12,7 @@
 /build
 
 /.idea
+/dist
 
 # misc
 .DS_Store
