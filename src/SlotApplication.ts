@@ -1,10 +1,18 @@
 import * as PIXI from "pixi.js";
 import { appConstants } from "./constants";
-import { Sprite } from "pixi.js";
+import {
+  Application,
+  Container,
+  Graphics,
+  Sprite,
+  TextStyle,
+  Texture,
+  Text,
+} from "pixi.js";
 import gsap from "gsap";
 
 interface IReel {
-  container: PIXI.Container;
+  container: Container;
   symbols: Array<Sprite>;
   position: number;
   previousPosition: number;
@@ -14,7 +22,7 @@ interface IReel {
 type TextType = "start" | "spinning";
 type Tween = gsap.core.Tween;
 
-export class SlotApplication extends PIXI.Application {
+export class SlotApplication extends Application {
   protected reels = new Array<IReel>();
   protected tweens = new Array<Tween>();
 
@@ -33,9 +41,8 @@ export class SlotApplication extends PIXI.Application {
   // onAssetsLoaded handler builds the example.
   onAssetsLoaded() {
     const resTextures = this.loader.resources["atlas"].textures;
-    const slotTextures = new Array<PIXI.Texture>();
+    const slotTextures = new Array<Texture>();
     if (resTextures) {
-      if (resTextures["queen.png"]) slotTextures.push(resTextures["queen.png"]);
       if (resTextures["king.png"]) slotTextures.push(resTextures["king.png"]);
       if (resTextures["2.png"]) slotTextures.push(resTextures["2.png"]);
       if (resTextures["9.png"]) slotTextures.push(resTextures["9.png"]);
@@ -43,9 +50,9 @@ export class SlotApplication extends PIXI.Application {
     }
 
     // Build the reels
-    const reelContainer = new PIXI.Container();
+    const reelContainer = new Container();
     for (let i = 0; i < 5; i++) {
-      const rc = new PIXI.Container();
+      const rc = new Container();
       rc.x = i * appConstants.REEL_WIDTH;
       reelContainer.addChild(rc);
 
@@ -62,7 +69,7 @@ export class SlotApplication extends PIXI.Application {
 
       // Build the symbols
       for (let j = 0; j < 4; j++) {
-        const symbol = new PIXI.Sprite(
+        const symbol = new Sprite(
           slotTextures[Math.floor(Math.random() * slotTextures.length)]
         );
         // Scale the symbol to fit symbol area.
@@ -85,10 +92,10 @@ export class SlotApplication extends PIXI.Application {
     reelContainer.x = Math.round(
       this.screen.width - appConstants.REEL_WIDTH * 5
     );
-    const top = new PIXI.Graphics();
+    const top = new Graphics();
     top.beginFill(0, 1);
     top.drawRect(0, 0, this.screen.width, margin);
-    const bottom = new PIXI.Graphics();
+    const bottom = new Graphics();
     bottom.beginFill(0, 1);
     bottom.drawRect(
       0,
@@ -97,7 +104,7 @@ export class SlotApplication extends PIXI.Application {
       margin
     );
 
-    const style = new PIXI.TextStyle({
+    const style = new TextStyle({
       fontFamily: "Arial",
       fontSize: 36,
       fontStyle: "italic",
@@ -112,17 +119,17 @@ export class SlotApplication extends PIXI.Application {
       dropShadowDistance: 3,
     });
 
-    const headerText = new PIXI.Text("PIXI SLOT", style);
+    const headerText = new Text("PIXI SLOT", style);
     headerText.x = Math.round((top.width - headerText.width) / 2);
     headerText.y = Math.round((margin - headerText.height) / 2);
     top.addChild(headerText);
 
-    const playText = new PIXI.Text("Spin the wheels!", style);
+    const playText = new Text("Spin the wheels!", style);
     playText.x = Math.round((bottom.width - playText.width) / 2);
     playText.y =
       this.screen.height - margin + Math.round((margin - playText.height) / 2);
 
-    const spinningText = new PIXI.Text("Spinning...", style);
+    const spinningText = new Text("Spinning...", style);
     spinningText.x = Math.round((bottom.width - spinningText.width) / 2);
     spinningText.y =
       this.screen.height -

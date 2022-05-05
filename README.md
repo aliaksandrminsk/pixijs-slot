@@ -1,6 +1,6 @@
-# PixiJS-React-MobX Example
+# PixiJS-Slot Example
 
-This project is a simple game. Technologies: [PixiJS](https://pixijs.com/), [React](https://reactjs.org/) and [MobX](https://mobx.js.org/).
+This project is a simple slot.
 
 To run the package.
 
@@ -11,6 +11,5 @@ npm install
 npm run start
 ```
 
-[PixiJS-React-MobX Example
-](https://pixi-react-tank.web.app/)
-"# pixijs-slot" 
+[PixiJS-Slot Example
+](https://pixijs-slot.web.app/)
