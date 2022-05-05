@@ -30,10 +30,7 @@ const filename = (ext) =>
 
 const babelOptions = () => {
   return {
-    presets: [
-      "@babel/preset-env",
-      "@babel/preset-typescript"
-    ],
+    presets: ["@babel/preset-env", "@babel/preset-typescript"],
     plugins: ["@babel/plugin-proposal-class-properties"],
   };
 };
@@ -56,14 +53,12 @@ const plugins = () => {
         },
       ],
     }),
-    //new ESLintWebpackPlugin({ extensions: ["ts"] }),
+    new ESLintWebpackPlugin({ extensions: ["ts"] }),
   ];
 
-  // if (isProd) {
-  //   base.push(
-  //       new MiniCssExtractPlugin({ filename: filename("css") })
-  //   );
-  // }
+  if (isProd) {
+    base.push(new MiniCssExtractPlugin({ filename: filename("css") }));
+  }
   return base;
 };
 
@@ -97,7 +92,7 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              sourceMap: true
+              sourceMap: true,
             },
           },
           {
@@ -129,7 +124,7 @@ module.exports = {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: "asset/resource",
-        use: "file-loader"
+        use: "file-loader",
       },
     ],
   },

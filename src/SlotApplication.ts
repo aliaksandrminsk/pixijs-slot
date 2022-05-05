@@ -10,6 +10,7 @@ import {
   Text,
 } from "pixi.js";
 import gsap from "gsap";
+import { IWrapper } from "./CanvasMenu";
 
 interface IReel {
   container: Container;
@@ -25,14 +26,15 @@ type Tween = gsap.core.Tween;
 export class SlotApplication extends Application {
   protected reels = new Array<IReel>();
   protected tweens = new Array<Tween>();
+  protected wrapper: IWrapper;
 
-  constructor() {
+  constructor(wrapper: IWrapper) {
     super({
       width: appConstants.STAGE_WIDTH,
       height: appConstants.STAGE_HEIGHT,
       backgroundColor: appConstants.COLOR,
     });
-
+    this.wrapper = wrapper;
     this.loader
       .add("atlas", "./atlas.json")
       .load(this.onAssetsLoaded.bind(this));
@@ -162,6 +164,8 @@ export class SlotApplication extends Application {
     let running = false;
 
     const startPlay = () => {
+      this.wrapper.closeMenu();
+
       if (running) return;
       running = true;
 
