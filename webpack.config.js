@@ -4,6 +4,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 const ESLintWebpackPlugin = require("eslint-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const isDev = process.env.NODE_ENV === "development";
 const isProd = !isDev;
@@ -16,6 +18,7 @@ const optimization = () => {
   };
   if (isProd) {
     config.minimizer = [
+      new CssMinimizerPlugin(),
       new TerserWebpackPlugin({ extractComments: false }),
     ];
   }
@@ -53,8 +56,14 @@ const plugins = () => {
         },
       ],
     }),
-    new ESLintWebpackPlugin({ extensions: ["ts"] }),
+    //new ESLintWebpackPlugin({ extensions: ["ts"] }),
   ];
+
+  // if (isProd) {
+  //   base.push(
+  //       new MiniCssExtractPlugin({ filename: filename("css") })
+  //   );
+  // }
   return base;
 };
 
@@ -69,7 +78,7 @@ module.exports = {
     publicPath: "/",
   },
   resolve: {
-    extensions: [".js", ".ts", ".json", ".css"],
+    extensions: [".js", ".ts", ".json", ".scss", ".css"],
   },
   optimization: optimization(),
   devServer: {
@@ -81,6 +90,34 @@ module.exports = {
   plugins: plugins(),
   module: {
     rules: [
+      {
+        test: /\.(sc|c)ss$/i,
+        use: [
+          isProd ? MiniCssExtractPlugin.loader : "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true
+            },
+          },
+          {
+            loader: "postcss-loader", // Run postcss actions
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    "postcss-preset-env",
+                    {
+                      stage: 3,
+                      browsers: "last 2 versions",
+                    },
+                  ],
+                ],
+              },
+            },
+          },
+        ],
+      },
       {
         test: /\.ts?$/i,
         exclude: /node_modules/,
