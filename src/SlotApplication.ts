@@ -177,7 +177,7 @@ export class SlotApplication extends Application {
         const tween = gsap.to(r, {
           position: target,
           duration: time,
-          ease: this.userEase(0.4),
+          ease: this.userEase(0.7),
         });
         if (i === this.reels.length - 1) tween.then(reelsComplete);
         tween.play();
