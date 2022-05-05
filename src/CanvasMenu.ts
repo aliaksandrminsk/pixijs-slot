@@ -9,32 +9,24 @@ export interface IWrapper {
 
 export class CanvasMenu {
   buttonDiv: HTMLElement = document.createElement("div");
+  menu: HTMLElement = document.createElement("ul");
   tl: Timeline = gsap.timeline({ paused: true });
 
-  constructor(parentDiv: HTMLElement, topPos: string, height: string) {
+  constructor(topPos: string, height: string) {
     const buttonSpan = document.createElement("span");
     this.buttonDiv.className = "canvas-menu__button";
     buttonSpan.innerHTML = "☰";
     this.buttonDiv.appendChild(buttonSpan);
-    parentDiv.appendChild(this.buttonDiv);
 
-    const menu = document.createElement("ul");
-    menu.className = "canvas-menu__items";
-    menu.style.top = topPos;
+    this.menu.className = "canvas-menu__items";
+    this.menu.style.top = topPos;
     const items = ["About", "Products", "Blogs", "Contact"];
     for (const name of items) {
-      menu.appendChild(this.getSubMenu(name));
+      this.menu.appendChild(this.getSubMenu(name));
     }
-    parentDiv.appendChild(menu);
+    const links = this.menu.querySelectorAll("li");
 
-    let links = null;
-    if (menu) {
-      links = menu.querySelectorAll("li");
-    }
-
-    //const tl = gsap.timeline({ paused: true });
-
-    this.tl.to(menu, {
+    this.tl.to(this.menu, {
       duration: 0.8,
       opacity: 1,
       height: height,
@@ -65,6 +57,15 @@ export class CanvasMenu {
     link.href = "#";
     li.appendChild(link);
     return li;
+  }
+
+  setParentDiv(parentDiv: HTMLElement) {
+    if (this.buttonDiv.parentElement) {
+      this.buttonDiv.parentElement.removeChild(this.buttonDiv);
+      this.buttonDiv.parentElement.removeChild(this.menu);
+    }
+    parentDiv.appendChild(this.buttonDiv);
+    parentDiv.appendChild(this.menu);
   }
 
   closeMenu() {
