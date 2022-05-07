@@ -1,16 +1,16 @@
-.canvas-menu__button {
+.menu__button {
   position: absolute;
   top: 2rem;
   right: 2rem;
 }
 
-.canvas-menu__button > span {
+.menu__button > span {
   font-size: 2rem;
   cursor: pointer;
   color: white;
 }
 
-.canvas-menu__items {
+.menu__items {
   position: absolute;
   top: 6.2rem;
   left: 0;
@@ -28,7 +28,7 @@
   height: 0;
 }
 
-ul.canvas-menu__items > li {
+ul.menu__items > li {
   margin: 1rem 0;
   font-size: 3rem;
 }

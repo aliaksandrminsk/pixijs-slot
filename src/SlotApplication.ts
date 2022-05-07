@@ -10,7 +10,7 @@ import {
   Text,
 } from "pixi.js";
 import gsap from "gsap";
-import { IWrapper } from "./CanvasMenu";
+import { IWrapper } from "./Menu";
 
 interface IReel {
   container: Container;

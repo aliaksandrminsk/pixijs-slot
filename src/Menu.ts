@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import "./canvasMenu.css";
+import "./Menu.css";
 
 type Timeline = gsap.core.Timeline;
 
@@ -7,18 +7,18 @@ export interface IWrapper {
   closeMenu: () => void;
 }
 
-export class CanvasMenu {
+export class Menu {
   buttonDiv: HTMLElement = document.createElement("div");
   menu: HTMLElement = document.createElement("ul");
   tl: Timeline = gsap.timeline({ paused: true });
 
   constructor(topPos: string, height: string) {
     const buttonSpan = document.createElement("span");
-    this.buttonDiv.className = "canvas-menu__button";
+    this.buttonDiv.className = "menu__button";
     buttonSpan.innerHTML = "☰";
     this.buttonDiv.appendChild(buttonSpan);
 
-    this.menu.className = "canvas-menu__items";
+    this.menu.className = "menu__items";
     this.menu.style.top = topPos;
     this.menu.style.pointerEvents = "none";
     const items = ["About", "Products", "Blogs", "Contact"];
